@@ -164,7 +164,9 @@ assign(Client_MSSQL.prototype, {
 
   // sets a request input parameter. Detects bigints and decimals and sets type appropriately.
   _setReqInput(req, i, binding) {
-    if (typeof binding == 'number') {
+    if (binding.hasOwnProperty('type')) {
+      req.input('p' + i, binding.type, binding.value);
+    } else if (typeof binding == 'number') {
       if (binding % 1 !== 0) {
         req.input(`p${i}`, this.driver.Decimal(38, 10), binding)
       } else if (binding < SQL_INT4.MIN || binding > SQL_INT4.MAX) {
